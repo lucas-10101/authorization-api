@@ -1,0 +1,156 @@
+# yaml-language-server: $schema=https://json.schemastore.org/liquibase-3.2.json
+databaseChangeLog:
+  - changeSet:
+      id: startdb
+      author: lucas-10101
+      changes:
+        - tagDatabase:
+            tag: v1.0.0
+      rollback:
+        - tagDatabase:
+            tag: v0.0.0
+
+  - changeSet:
+      id: create-table-users
+      author: lucas-10101
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: CHAR(36)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: username
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: password
+                  type: CHAR(60)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+      rollback:
+        - dropTable:
+            tableName: users
+
+  - changeSet:
+      id: create-table-groups
+      author: lucas-10101
+      changes:
+        - createTable:
+            tableName: groups
+            columns:
+              - column:
+                  name: id
+                  type: CHAR(36)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+      rollback:
+        - dropTable:
+            tableName: groups
+
+  - changeSet:
+      id: create-table-roles
+      author: lucas-10101
+      changes:
+        - createTable:
+            tableName: roles
+            columns:
+              - column:
+                  name: id
+                  type: CHAR(36)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+      rollback:
+        - dropTable:
+            tableName: roles
+
+  - changeSet:
+      id: create-table-user_groups
+      author: lucas-10101
+      changes:
+        - createTable:
+            tableName: user_groups
+            columns:
+              - column:
+                  name: user_id
+                  type: CHAR(36)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: group_id
+                  type: CHAR(36)
+                  constraints:
+                    nullable: false
+      rollback:
+        - dropTable:
+            tableName: user_groups
+
+  - changeSet:
+      id: create-table-group_roles
+      author: lucas-10101
+      changes:
+        - createTable:
+            tableName: group_roles
+            columns:
+              - column:
+                  name: group_id
+                  type: CHAR(36)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: role_id
+                  type: CHAR(36)
+                  constraints:
+                    nullable: false
+      rollback:
+        - dropTable:
+            tableName: group_roles
+
+  - changeSet:
+      id: create-table-siging_keys
+      author: lucas-10101
+      changes:
+        - createTable:
+            tableName: signing_keys
+            columns:
+              - column:
+                  name: kid
+                  type: CHAR(36)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: private_key
+                  type: TEXT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+      rollback:
+        - dropTable:
+            tableName: signing_keys
