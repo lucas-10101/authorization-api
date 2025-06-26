@@ -154,3 +154,65 @@ databaseChangeLog:
       rollback:
         - dropTable:
             tableName: signing_keys
+
+  - changeSet:
+      id: create-table-tenants
+      author: lucas-10101
+      changes:
+        - createTable:
+            tableName: tenants
+            columns:
+              - column:
+                  name: id
+                  type: CHAR(36)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+      rollback:
+        - dropTable:
+            tableName: tenants
+
+  - changeSet:
+      id: add-tenant-id-to-users
+      author: lucas-10101
+      changes:
+        - addColumn:
+            tableName: users
+            columns:
+              - column:
+                  name: tenant_id
+                  type: CHAR(36) 
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_users_tenant_id
+                    referencedTableName: tenants
+                    referencedColumnNames: id
+      rollback:
+        - dropColumn:
+            tableName: users
+            columnName: tenant_id
+
+  - changeSet:
+      id: add-tenant-id-to-groups
+      author: lucas-10101
+      changes:
+        - addColumn:
+            tableName: groups
+            columns:
+              - column:
+                  name: tenant_id
+                  type: CHAR(36)
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_groups_tenant_id
+                    referencedTableName: tenants
+                    referencedColumnNames: id
+      rollback:
+        - dropColumn:
+            tableName: groups
+            columnName: tenant_id

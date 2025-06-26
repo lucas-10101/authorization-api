@@ -7,6 +7,9 @@ import (
 	"encoding/base64"
 	"io"
 	"os"
+	"strconv"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 // EncryptAES encrypts the plaintext using AES encryption with the provided key.
@@ -57,4 +60,21 @@ func DecryptAES(encrypted string) (string, error) {
 		return "", err
 	}
 	return string(plaintext), nil
+}
+
+func EncryptBcrypt(plaintext string) (string, error) {
+
+	var hashedPasswordBytes []byte
+	var bcryptSaltSize int = 12
+	var err error
+
+	if bcryptSaltSize, err = strconv.Atoi(os.Getenv("BCRYPT_DEFAULT_COST")); err != nil {
+		return "", err
+	}
+
+	hashedPasswordBytes, err = bcrypt.GenerateFromPassword([]byte(plaintext), bcryptSaltSize)
+	if err != nil {
+		return "", err
+	}
+	return string(hashedPasswordBytes), nil
 }
