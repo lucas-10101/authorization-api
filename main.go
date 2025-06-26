@@ -7,7 +7,7 @@ import (
 
 func main() {
 	slog.Info("Application started")
-
 	utils.LoadEnv()
+
 	slog.Info("Application finished")
 }

@@ -2,6 +2,7 @@ package utils
 
 import (
 	"bufio"
+	"fmt"
 	"log/slog"
 	"os"
 	"strings"
@@ -20,8 +21,13 @@ func LoadEnv() {
 
 	for scanner, lnNum = bufio.NewScanner(fd), 1; scanner.Scan(); lnNum++ {
 		line := strings.TrimSpace(scanner.Text())
+
 		if !strings.Contains(line, "=") {
 			continue
+		}
+
+		if strings.Contains(line, "#") {
+			line = strings.TrimSpace(strings.SplitN(line, "#", 2)[0])
 		}
 
 		lineParts := strings.SplitN(line, "=", 2)
@@ -35,5 +41,9 @@ func LoadEnv() {
 			slog.Error("Failed to set environment variable", "key", lineParts[0], "error", err)
 			continue
 		}
+	}
+
+	if err != nil {
+		panic(fmt.Sprintf("All environment variables must loaded from .env file, last error is: %v", err))
 	}
 }
