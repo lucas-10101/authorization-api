@@ -26,8 +26,8 @@ func (dao UserDataAccessObject) FindUserByUsernameAndTenantId(username, password
 	}
 
 	query := `
-		SELECT id, email, password FROM users WHERE username = $1 AND tenant_id = $3`
-	row := dao.Connection.QueryRowContext(dao.Context, query, username, password, tenantId)
+		SELECT id, email, password FROM users WHERE username = $1 AND tenant_id = $2`
+	row := dao.Connection.QueryRowContext(dao.Context, query, username, tenantId)
 
 	user = &models.User{}
 
