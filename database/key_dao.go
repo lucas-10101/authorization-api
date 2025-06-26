@@ -20,9 +20,11 @@ func (dao *KeyDataAccessObject) SaveKey(sigingKey *models.SigningKey) (err error
 		`INSERT INTO signing_keys (
 			kid, 
 			private_key, 
-			created_at
-		) VALUES ($1, $2, $3)`,
-		sigingKey.Kid, sigingKey.PrivateKey, sigingKey.CreatedAt)
+			created_at,
+			active,
+			key_group
+		) VALUES ($1, $2, $3, $4, $5)`,
+		sigingKey.Kid, sigingKey.PrivateKey, sigingKey.CreatedAt, sigingKey.Active, sigingKey.KeyGroup)
 
 	if err != nil {
 		slog.Error(fmt.Sprintf("Error saving signing key: %v", err))
@@ -31,4 +33,32 @@ func (dao *KeyDataAccessObject) SaveKey(sigingKey *models.SigningKey) (err error
 	}
 
 	return err
+}
+
+func (dao *KeyDataAccessObject) GetCurrentRSASigningKeyByGroup(keyGroup models.SigningKeyGroup) (sigingKey *models.SigningKey, err error) {
+
+	row := dao.Connection.QueryRowContext(dao.Context,
+		`SELECT
+			kid, 
+			private_key, 
+			created_at
+		FROM 
+			signing_keys
+		WHERE 
+			key_group = $1 AND active = true
+		ORDER BY 
+			created_at DESC`, keyGroup)
+
+	sigingKey = &models.SigningKey{
+		Active:   true,
+		KeyGroup: keyGroup,
+	}
+
+	err = row.Scan(
+		&sigingKey.Kid,
+		&sigingKey.PrivateKey,
+		&sigingKey.CreatedAt,
+	)
+
+	return sigingKey, err
 }

@@ -1,5 +1,7 @@
 package models
 
+import "crypto/rsa"
+
 type Tenant struct {
 	ID   string `json:"id"`
 	Name string `json:"name"`
@@ -34,8 +36,17 @@ type GroupRole struct {
 	RoleID  string `json:"role_id"`
 }
 
+type SigningKeyGroup string
+
+var (
+	JWT_KEY_GROUP SigningKeyGroup = SigningKeyGroup("JWT")
+)
+
 type SigningKey struct {
-	Kid        string `json:"-"`
-	CreatedAt  string `json:"-"`
-	PrivateKey string `json:"-"`
+	Kid           string          `json:"-"`
+	CreatedAt     string          `json:"-"`
+	PrivateKey    string          `json:"-"`
+	RsaPrivateKey *rsa.PrivateKey `json:"-" db:"-"`
+	Active        bool            `json:"-"`
+	KeyGroup      SigningKeyGroup `json:"-"`
 }
