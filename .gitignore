@@ -3,3 +3,5 @@ liquibase.properties
 *.env
 !sample.env
 .gitconfig
+
+**_debug_**
