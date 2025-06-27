@@ -8,12 +8,22 @@ import (
 	"strings"
 )
 
-func LoadEnv() {
+// LoadEnv reads a .env file and sets environment variables based on its content.
+// If targetFile is provided, it uses that file instead of the default ".env".
+// It ignores lines that do not contain an '=' character, and it trims whitespace.
+// Lines starting with '#' are treated as comments and ignored.
+func LoadEnv(targetFile string) {
+
+	file := ".env"
+	if targetFile != "" {
+		file = targetFile
+	}
+
 	var err error
 	var fd *os.File
 	var scanner *bufio.Scanner
 	var lnNum int
-	if fd, err = os.OpenFile(".env", os.O_RDONLY, 0644); err != nil {
+	if fd, err = os.OpenFile(file, os.O_RDONLY, 0644); err != nil {
 		slog.Error("Failed to open .env file", "error", err)
 		return
 	}

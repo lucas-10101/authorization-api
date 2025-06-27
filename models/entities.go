@@ -36,6 +36,16 @@ type GroupRole struct {
 	RoleID  string `json:"role_id"`
 }
 
+type Permission struct {
+	ID   string `json:"id"`
+	Name string `json:"name"`
+}
+
+type RolePermission struct {
+	RoleID       string `json:"role_id"`
+	PermissionID string `json:"permission_id"`
+}
+
 type SigningKeyGroup string
 
 var (

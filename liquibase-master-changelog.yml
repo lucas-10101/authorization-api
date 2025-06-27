@@ -241,3 +241,53 @@ databaseChangeLog:
         - dropColumn:
             tableName: signing_keys
             columnName: key_group
+
+  - changeSet:
+      id: create-table-permissions
+      author: lucas-10101
+      changes:
+        - createTable:
+            tableName: permissions
+            columns:
+              - column:
+                  name: id
+                  type: CHAR(36)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+      rollback:
+        - dropTable:
+            tableName: permissions
+  - changeSet:
+      id: create-table-role_permissions  
+      author: lucas-10101
+      changes:
+        - createTable:
+            tableName: role_permissions
+            columns:
+              - column:
+                  name: role_id
+                  type: CHAR(36)
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_role_permissions_role_id
+                    referencedTableName: roles
+                    referencedColumnNames: id
+              - column:
+                  name: permission_id
+                  type: CHAR(36)
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_role_permissions_permission_id
+                    referencedTableName: permissions
+                    referencedColumnNames: id
+      rollback:
+        - dropTable:
+            tableName: role_permissions
+
+
