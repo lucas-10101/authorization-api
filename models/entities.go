@@ -37,8 +37,15 @@ type GroupRole struct {
 }
 
 type Permission struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
+	ID          string `json:"id"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Resource    string `json:"resource"`
+	Scope       string `json:"scope"`
+}
+
+func (p *Permission) ToScopedResource() string {
+	return p.Resource + ":" + p.Scope
 }
 
 type RolePermission struct {

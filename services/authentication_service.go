@@ -30,6 +30,21 @@ func (s *AuthenticationService) AuthenticateUser(username, password, tenantId st
 		return "", err
 	}
 
+	permissionDao := database.PermissionDataAccessObject{
+		Connection: s.Connection,
+		Context:    s.Context,
+	}
+
+	var permissions []*models.Permission
+	if permissions, err = permissionDao.FindAllByUserID(user.ID); err != nil {
+		return "", err
+	}
+
+	var scopedRoles []string = make([]string, len(permissions))
+	for index, permission := range permissions {
+		scopedRoles[index] = permission.ToScopedResource()
+	}
+
 	var tokenTTL int64
 	if tokenTTL, err = strconv.ParseInt(os.Getenv("JWT_TOKEN_LIFESPAN_MINUTES"), 10, 64); err != nil {
 		tokenTTL = 1
@@ -41,6 +56,7 @@ func (s *AuthenticationService) AuthenticateUser(username, password, tenantId st
 		"exp":       time.Now().Add(time.Minute * time.Duration(tokenTTL)).Unix(),
 		"email":     user.Email,
 		"tenant_id": user.TenantId,
+		"roles":     scopedRoles,
 	})
 
 	keyService := &SigningKeyService{
@@ -55,4 +71,12 @@ func (s *AuthenticationService) AuthenticateUser(username, password, tenantId st
 	jwtTokenString, err = tokenModel.SignedString(signingKey.RsaPrivateKey)
 
 	return jwtTokenString, err
+}
+
+func (s *AuthenticationService) MakeRoleList(permissions []*models.Permission) []string {
+	var roles []string
+	for _, perm := range permissions {
+		roles = append(roles, perm.Scope)
+	}
+	return roles
 }

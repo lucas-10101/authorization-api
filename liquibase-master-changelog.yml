@@ -290,4 +290,34 @@ databaseChangeLog:
         - dropTable:
             tableName: role_permissions
 
+  - changeSet:
+      id: add-columns-to-permissions
+      author: lucas-10101
+      changes:
+        - addColumn:
+            tableName: permissions
+            columns:
+              - column:
+                  name: description
+                  type: VARCHAR(512)    
+              - column:
+                  name: resource
+                  type: VARCHAR(64)
+              - column:
+                  name: scope
+                  type: VARCHAR(32)
+      rollback:
+        - dropColumn:
+            tableName: permissions
+            columnName: description
+        - dropColumn:
+            tableName: permissions
+            columnName: resource
+        - dropColumn:
+            tableName: permissions
+            columnName: scope 
+
+
+
+
 

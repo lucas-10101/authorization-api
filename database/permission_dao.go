@@ -20,7 +20,10 @@ func (dao *PermissionDataAccessObject) FindAllByRoleId(roleId string) ([]*models
 		dao.Context,
 		`SELECT
 			PERMISSIONS.ID,
-			PERMISSIONS.NAME
+			PERMISSIONS.NAME,
+			PERMISSIONS.DESCRIPTION,
+			PERMISSIONS.RESOURCE,
+			PERMISSIONS.SCOPE
 		FROM
 			ROLE_PERMISSIONS
 			INNER JOIN PERMISSIONS ON PERMISSIONS.ID = ROLE_PERMISSIONS.PERMISSION_ID
@@ -33,7 +36,7 @@ func (dao *PermissionDataAccessObject) FindAllByRoleId(roleId string) ([]*models
 
 	for resultSet.Next() {
 		var permission = &models.Permission{}
-		if err = resultSet.Scan(&permission.ID, &permission.Name); err != nil {
+		if err = resultSet.Scan(&permission.ID, &permission.Name, &permission.Description, &permission.Resource, &permission.Scope); err != nil {
 			return nil, err
 		}
 		permissionList = append(permissionList, permission)
@@ -51,7 +54,10 @@ func (dao *PermissionDataAccessObject) FindAllByUserID(userId string) ([]*models
 		dao.Context,
 		`SELECT
 			PERMISSIONS.ID,
-			PERMISSIONS.NAME
+			PERMISSIONS.NAME,
+			PERMISSIONS.DESCRIPTION,
+			PERMISSIONS.RESOURCE,
+			PERMISSIONS.SCOPE
 		FROM
 			USER_GROUPS
 			INNER JOIN GROUPS ON USER_GROUPS.GROUP_ID = GROUPS.ID
@@ -68,7 +74,7 @@ func (dao *PermissionDataAccessObject) FindAllByUserID(userId string) ([]*models
 
 	for resultSet.Next() {
 		var permission = &models.Permission{}
-		if err = resultSet.Scan(&permission.ID, &permission.Name); err != nil {
+		if err = resultSet.Scan(&permission.ID, &permission.Name, &permission.Description, &permission.Resource, &permission.Scope); err != nil {
 			return nil, err
 		}
 		permissionList = append(permissionList, permission)
@@ -86,7 +92,10 @@ func (dao *PermissionDataAccessObject) FindAllByGroupId(groupId string) ([]*mode
 		dao.Context,
 		`SELECT
 			PERMISSIONS.ID,
-			PERMISSIONS.NAME
+			PERMISSIONS.NAME,
+			PERMISSIONS.DESCRIPTION,
+			PERMISSIONS.RESOURCE,
+			PERMISSIONS.SCOPE
 		FROM
 			GROUP_ROLES
 			INNER JOIN ROLES ON ROLES.ID = GROUP_ROLES.ROLE_ID
@@ -101,7 +110,7 @@ func (dao *PermissionDataAccessObject) FindAllByGroupId(groupId string) ([]*mode
 
 	for resultSet.Next() {
 		var permission = &models.Permission{}
-		if err = resultSet.Scan(&permission.ID, &permission.Name); err != nil {
+		if err = resultSet.Scan(&permission.ID, &permission.Name, &permission.Description, &permission.Resource, &permission.Scope); err != nil {
 			return nil, err
 		}
 		permissionList = append(permissionList, permission)
