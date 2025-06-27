@@ -56,7 +56,7 @@ func (s *AuthenticationService) AuthenticateUser(username, password, tenantId st
 		"exp":       time.Now().Add(time.Minute * time.Duration(tokenTTL)).Unix(),
 		"email":     user.Email,
 		"tenant_id": user.TenantId,
-		"roles":     scopedRoles,
+		"scopes":    scopedRoles,
 	})
 
 	keyService := &SigningKeyService{
@@ -73,7 +73,7 @@ func (s *AuthenticationService) AuthenticateUser(username, password, tenantId st
 	return jwtTokenString, err
 }
 
-func (s *AuthenticationService) MakeRoleList(permissions []*models.Permission) []string {
+func (s *AuthenticationService) MakeScopeList(permissions []*models.Permission) []string {
 	var roles []string
 	for _, perm := range permissions {
 		roles = append(roles, perm.Scope)

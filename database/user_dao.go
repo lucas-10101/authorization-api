@@ -48,3 +48,37 @@ func (dao UserDataAccessObject) FindUserByUsernameAndTenantId(username, password
 
 	return user, err
 }
+
+func (dao UserDataAccessObject) FindUserById(userId string) (user *models.User, err error) {
+	if userId == "" {
+		return nil, errors.New("userId cannot be empty")
+	}
+
+	row := dao.Connection.QueryRowContext(
+		dao.Context,
+		`SELECT
+			ID,
+			USERNAME,
+			EMAIL,
+			TENANT_ID
+		FROM
+			USERS
+		WHERE
+			ID = $1`,
+		userId)
+
+	user = &models.User{}
+	user.Password = "[REDACTED]" // Do not return the password in the user object
+	err = row.Scan(
+		&user.ID,
+		&user.Username,
+		&user.Email,
+		&user.TenantId,
+	)
+
+	if err != nil {
+		return nil, errors.New("user not found")
+	}
+
+	return user, nil
+}

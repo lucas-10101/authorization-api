@@ -1,0 +1,323 @@
+# yaml-language-server: $schema=https://json.schemastore.org/liquibase-3.2.json
+databaseChangeLog:
+  - changeSet:
+      id: startdb
+      author: lucas-10101
+      changes:
+        - tagDatabase:
+            tag: v1.0.0
+      rollback:
+        - tagDatabase:
+            tag: v0.0.0
+
+  - changeSet:
+      id: create-table-users
+      author: lucas-10101
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: CHAR(36)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: username
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: password
+                  type: CHAR(60)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+      rollback:
+        - dropTable:
+            tableName: users
+
+  - changeSet:
+      id: create-table-groups
+      author: lucas-10101
+      changes:
+        - createTable:
+            tableName: groups
+            columns:
+              - column:
+                  name: id
+                  type: CHAR(36)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+      rollback:
+        - dropTable:
+            tableName: groups
+
+  - changeSet:
+      id: create-table-roles
+      author: lucas-10101
+      changes:
+        - createTable:
+            tableName: roles
+            columns:
+              - column:
+                  name: id
+                  type: CHAR(36)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+      rollback:
+        - dropTable:
+            tableName: roles
+
+  - changeSet:
+      id: create-table-user_groups
+      author: lucas-10101
+      changes:
+        - createTable:
+            tableName: user_groups
+            columns:
+              - column:
+                  name: user_id
+                  type: CHAR(36)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: group_id
+                  type: CHAR(36)
+                  constraints:
+                    nullable: false
+      rollback:
+        - dropTable:
+            tableName: user_groups
+
+  - changeSet:
+      id: create-table-group_roles
+      author: lucas-10101
+      changes:
+        - createTable:
+            tableName: group_roles
+            columns:
+              - column:
+                  name: group_id
+                  type: CHAR(36)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: role_id
+                  type: CHAR(36)
+                  constraints:
+                    nullable: false
+      rollback:
+        - dropTable:
+            tableName: group_roles
+
+  - changeSet:
+      id: create-table-siging_keys
+      author: lucas-10101
+      changes:
+        - createTable:
+            tableName: signing_keys
+            columns:
+              - column:
+                  name: kid
+                  type: CHAR(36)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: private_key
+                  type: TEXT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+      rollback:
+        - dropTable:
+            tableName: signing_keys
+
+  - changeSet:
+      id: create-table-tenants
+      author: lucas-10101
+      changes:
+        - createTable:
+            tableName: tenants
+            columns:
+              - column:
+                  name: id
+                  type: CHAR(36)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+      rollback:
+        - dropTable:
+            tableName: tenants
+
+  - changeSet:
+      id: add-tenant-id-to-users
+      author: lucas-10101
+      changes:
+        - addColumn:
+            tableName: users
+            columns:
+              - column:
+                  name: tenant_id
+                  type: CHAR(36) 
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_users_tenant_id
+                    referencedTableName: tenants
+                    referencedColumnNames: id
+      rollback:
+        - dropColumn:
+            tableName: users
+            columnName: tenant_id
+
+  - changeSet:
+      id: add-tenant-id-to-groups
+      author: lucas-10101
+      changes:
+        - addColumn:
+            tableName: groups
+            columns:
+              - column:
+                  name: tenant_id
+                  type: CHAR(36)
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_groups_tenant_id
+                    referencedTableName: tenants
+                    referencedColumnNames: id
+      rollback:
+        - dropColumn:
+            tableName: groups
+            columnName: tenant_id
+
+  - changeSet:
+      id: add-key-group-to-signing_keys
+      author: lucas-10101
+      changes:
+        - addColumn:
+            tableName: signing_keys
+            columns:
+              - column:
+                  name: active
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+              - column:
+                  name: key_group
+                  type: VARCHAR(32)
+                  constraints:
+                    nullable: false
+      rollback:
+        - dropColumn:
+            tableName: signing_keys
+            columnName: active
+        - dropColumn:
+            tableName: signing_keys
+            columnName: key_group
+
+  - changeSet:
+      id: create-table-permissions
+      author: lucas-10101
+      changes:
+        - createTable:
+            tableName: permissions
+            columns:
+              - column:
+                  name: id
+                  type: CHAR(36)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+      rollback:
+        - dropTable:
+            tableName: permissions
+  - changeSet:
+      id: create-table-role_permissions  
+      author: lucas-10101
+      changes:
+        - createTable:
+            tableName: role_permissions
+            columns:
+              - column:
+                  name: role_id
+                  type: CHAR(36)
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_role_permissions_role_id
+                    referencedTableName: roles
+                    referencedColumnNames: id
+              - column:
+                  name: permission_id
+                  type: CHAR(36)
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_role_permissions_permission_id
+                    referencedTableName: permissions
+                    referencedColumnNames: id
+      rollback:
+        - dropTable:
+            tableName: role_permissions
+
+  - changeSet:
+      id: add-columns-to-permissions
+      author: lucas-10101
+      changes:
+        - addColumn:
+            tableName: permissions
+            columns:
+              - column:
+                  name: description
+                  type: VARCHAR(512)    
+              - column:
+                  name: resource
+                  type: VARCHAR(64)
+              - column:
+                  name: scope
+                  type: VARCHAR(32)
+      rollback:
+        - dropColumn:
+            tableName: permissions
+            columnName: description
+        - dropColumn:
+            tableName: permissions
+            columnName: resource
+        - dropColumn:
+            tableName: permissions
+            columnName: scope 
+
+
+
+
+
