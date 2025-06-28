@@ -10,7 +10,7 @@ type Tenant struct {
 type User struct {
 	ID       string `json:"id"`
 	Username string `json:"username"`
-	Password string `json:"password"`
+	Password string `json:"-"`
 	Email    string `json:"email"`
 	TenantId string `json:"tenant_id"`
 }
