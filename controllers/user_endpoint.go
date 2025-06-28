@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func UserDetails(writer http.ResponseWriter, request *http.Request) {
+func GetUserDetails(writer http.ResponseWriter, request *http.Request) {
 	userId := request.URL.Query().Get("userId")
 
 	userService := &services.UserService{

@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func AuthenticationEndpoint(writter http.ResponseWriter, request *http.Request) {
+func PostTokenForm(writter http.ResponseWriter, request *http.Request) {
 
 	request.ParseForm()
 	request.ParseMultipartForm(1024 * 32)

@@ -6,3 +6,7 @@ type UserDetailsDto struct {
 	Roles       []*Role       `json:"roles"`
 	Permissions []*Permission `json:"permissions"`
 }
+
+type TokenDto struct {
+	Token string `json:"token"`
+}
